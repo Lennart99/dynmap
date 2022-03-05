@@ -2367,6 +2367,8 @@ block:id=black_banner,id=black_wall_banner,data=*,patch0=0:oak_planks,patch1=0:b
 [1.16-]texture:id=twisting_vines_plant
 [1.16-]texture:id=crimson_planks
 [1.16-]texture:id=warped_planks
+[1.16-]texture:id=deepslate_fence
+[1.16-]texture:id=diorite_fence
 [1.16-]texture:id=warped_trapdoor
 [1.16-]texture:id=crimson_trapdoor
 [1.16-]texture:id=warped_door_top
@@ -2500,17 +2502,17 @@ block:id=black_banner,id=black_wall_banner,data=*,patch0=0:oak_planks,patch1=0:b
 # Crimson pressure plate
 [1.16-]block:id=crimson_pressure_plate,allfaces=0:crimson_planks,stdrot=true,transparency=TRANSPARENT
 # Crimson Fence
-[1.16-]block:id=crimson_fence,patch0-2=0:crimson_planks,transparency=TRANSPARENT
+[1.16-]block:id=crimson_fence,patch0-2=0:deepslate_fence,transparency=TRANSPARENT
 # Warped Fence
-[1.16-]block:id=warped_fence,patch0-2=0:warped_planks,transparency=TRANSPARENT
+[1.16-]block:id=warped_fence,patch0-2=0:diorite_fence,transparency=TRANSPARENT
 # Crimson Trapdoor
 [1.16-]block:id=crimson_trapdoor,allfaces=0:crimson_trapdoor,stdrot=true,transparency=TRANSPARENT
 # Warped Trapdoor
 [1.16-]block:id=warped_trapdoor,allfaces=0:warped_trapdoor,stdrot=true,transparency=TRANSPARENT
 # Crimson Fence gate
-[1.16-]block:id=crimson_fence_gate,patch0-2=0:crimson_planks,stdrot=true,transparency=TRANSPARENT
+[1.16-]block:id=crimson_fence_gate,patch0-2=0:deepslate_fence,stdrot=true,transparency=TRANSPARENT
 # Warped Fence gate
-[1.16-]block:id=warped_fence_gate,patch0-2=0:warped_planks,stdrot=true,transparency=TRANSPARENT
+[1.16-]block:id=warped_fence_gate,patch0-2=0:diorite_fence,stdrot=true,transparency=TRANSPARENT
 # Crimson stairs
 [1.16-]block:id=crimson_stairs,patch0-2=0:crimson_planks,transparency=SEMITRANSPARENT
 # Warped stairs
