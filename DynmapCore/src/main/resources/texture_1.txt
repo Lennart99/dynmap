@@ -207,6 +207,7 @@ texture:id=piston_inner
 texture:id=piston_side,format=CUSTOM,tile0=0:0/16:16/0:0,tile1=0:0/12:4/4:6,tile2=12:0/4:4/0:6,xcount=1,ycount=1
 texture:id=piston_top
 texture:id=piston_top_sticky
+texture:id=trafic_light_front
 texture:id=dandelion
 texture:id=poppy
 texture:id=blue_orchid
@@ -828,7 +829,10 @@ block:id=tall_seagrass,data=1,patch0-3=1000:tall_seagrass_bottom,transparency=TR
 #  Piston
 block:id=piston,patch0=0:piston_bottom,patch1=0:piston_top,patch2=0:piston_side,patch3=0:piston_inner,patch4=6002:piston_side
 # Sticky piston
-block:id=sticky_piston,patch0=0:piston_bottom,patch1=0:piston_top_sticky,patch2=0:piston_side,patch3=0:piston_inner,patch4=6002:piston_side
+# Extended
+block:id=sticky_piston,data=1,data=2,data=3,data=4,data=0,data=5,patch0=0:piston_bottom,patch1=0:piston_top_sticky,patch2=0:piston_side,patch3=0:piston_inner,patch4=6002:piston_side
+# Not extended
+block:id=sticky_piston,data=6,data=7,data=8,data=9,data=10,data=11,patch0=0:black_concrete_powder,patch1=0:piston_top_sticky,patch2=0:black_concrete_powder,patch3=0:trafic_light_front,patch4=6000:black_concrete_powder
 # Piston head
 block:id=piston_head,data=0,data=2,data=4,data=6,data=8,data=10,data=12,data=14,data=16,data=18,data=20,data=22,patch0=0:piston_bottom,patch1=0:piston_top,patch2=0:piston_side,patch3=0:piston_inner,patch4=6001:piston_side,transparency=TRANSPARENT
 block:id=piston_head,data=1,data=3,data=5,data=7,data=9,data=11,data=13,data=15,data=17,data=19,data=21,data=23,patch0=0:piston_bottom,patch1=0:piston_top_sticky,patch2=0:piston_side,patch3=0:piston_inner,patch4=6001:piston_side,transparency=TRANSPARENT
