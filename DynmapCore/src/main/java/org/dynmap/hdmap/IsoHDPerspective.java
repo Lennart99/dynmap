@@ -18,7 +18,6 @@ import org.dynmap.Log;
 import org.dynmap.MapManager;
 import org.dynmap.MapTile;
 import org.dynmap.MapType;
-import org.dynmap.MapType.ImageFormat;
 import org.dynmap.MapTypeState;
 import org.dynmap.markers.impl.MarkerAPIImpl;
 import org.dynmap.renderer.DynmapBlockState;
@@ -1269,7 +1268,7 @@ public class IsoHDPerspective implements HDPerspective {
         // Mark the tiles we're going to render as validated
         for (int i = 0; i < numshaders; i++) {
             MapTypeState mts = world.getMapState(shaderstate[i].getMap());
-            if (mts != null) {
+            if (mts != null && mts.type.isReadOnly() == false) {
                 mts.validateTile(tile.tx, tile.ty);
             }
         }

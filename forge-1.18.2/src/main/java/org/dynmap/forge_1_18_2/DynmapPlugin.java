@@ -1023,12 +1023,25 @@ public class DynmapPlugin
         }
         @Override
         public File getModContainerFile(String name) {
-        	ModFileInfo mfi = LoadingModList.get().getModFileById(name);    // Try case sensitive lookup
+            ModFileInfo mfi = LoadingModList.get().getModFileById(name);    // Try case sensitive lookup
             if (mfi != null) {
-            	File f = mfi.getFile().getFilePath().toFile();
-                return f;
+                try {
+                    File f = mfi.getFile().getFilePath().toFile();
+                    return f;
+                }
+                catch (UnsupportedOperationException ex) {
+                    //TODO Implement proper jar in jar method for fetching data
+/*
+                    Log.info("Searching for: " + name);
+                    for (IModInfo e: ModList.get().getMods()) {
+                        Log.info("in: " + e.getModId().toString());
+                        Log.info("resource: "+ ModList.get().getModFileById(e.getModId()).getFile().findResource(String.valueOf(mfi.getFile().getFilePath()))); //requires forge 1.18.2-40.1.60+ (update build.gradle)
+                    }
+*/
+                    Log.warning("jar in jar method found, skipping: " + ex.getMessage());
+                }
             }
-        	return null;
+            return null;
         }
         @Override
         public List<String> getModList() {
@@ -1287,10 +1300,17 @@ public class DynmapPlugin
         }
         @Override
         public boolean isInvisible() {
-        	if(player != null) {
-        		return player.isInvisible();
-        	}
-        	return false;
+            if(player != null) {
+                return player.isInvisible();
+            }
+            return false;
+        }
+        @Override
+        public boolean isSpectator() {
+            if(player != null) {
+                return player.isSpectator();
+            }
+            return false;
         }
         @Override
         public int getSortWeight() {
@@ -1423,6 +1443,7 @@ public class DynmapPlugin
                     bmap.setWaterColorMultiplier(watermult);
                 	Log.verboseinfo("Set watercolormult for " + bmap.toString() + " (" + i + ") to " + Integer.toHexString(watermult));
                 }
+                bmap.setBiomeObject(bb);
             }
         }
         if(cnt > 0)

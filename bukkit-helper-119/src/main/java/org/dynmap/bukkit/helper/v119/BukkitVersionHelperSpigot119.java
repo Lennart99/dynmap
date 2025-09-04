@@ -69,7 +69,7 @@ public class BukkitVersionHelperSpigot119 extends BukkitVersionHelper {
     public BukkitVersionHelperSpigot119() {
         boolean unsafeAsync1;
         try {
-            Class.forName("com.destroystokyo.paper.io.PaperFileIOThread");
+            Class.forName("io.papermc.paper.chunk.system.io.RegionFileIOThread");
             unsafeAsync1 = false;
         } catch (ClassNotFoundException e) {
             unsafeAsync1 = true;
@@ -354,7 +354,7 @@ public class BukkitVersionHelperSpigot119 extends BukkitVersionHelper {
 	}
 
 	@Override
-	public Object readTileEntityNBT(Object te) {
+	public Object readTileEntityNBT(Object te, org.bukkit.World w) {
 		TileEntity tileent = (TileEntity) te;
 		NBTTagCompound nbt = tileent.n();
         return nbt;

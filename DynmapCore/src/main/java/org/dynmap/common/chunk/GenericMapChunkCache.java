@@ -54,11 +54,13 @@ public abstract class GenericMapChunkCache extends MapChunkCache {
 		private DynmapBlockState blk;
 		private final int worldheight;
 		private final int ymin;
+		private final int sealevel;
 
 		OurMapIterator(int x0, int y0, int z0) {
 			initialize(x0, y0, z0);
 			worldheight = dw.worldheight;
 			ymin = dw.minY;
+			sealevel = dw.sealevel;
 		}
 
 		@Override
@@ -181,7 +183,7 @@ public abstract class GenericMapChunkCache extends MapChunkCache {
 					for (int dz = -1; dz <= 1; dz++) {
 						BiomeMap bm = getBiomeRel(dx, dz);
 						if (bm == BiomeMap.NULL) continue; 
-						int rmult = bm.getModifiedGrassMultiplier(colormap[bm.biomeLookup()]);
+						int rmult = getGrassColor(bm, colormap, getX() + dx, getZ() + dz);
 						raccum += (rmult >> 16) & 0xFF;
 						gaccum += (rmult >> 8) & 0xFF;
 						baccum += rmult & 0xFF;
@@ -212,7 +214,7 @@ public abstract class GenericMapChunkCache extends MapChunkCache {
 					for (int dz = -1; dz <= 1; dz++) {
 						BiomeMap bm = getBiomeRel(dx, dz);
 						if (bm == BiomeMap.NULL) continue; 
-						int rmult = bm.getModifiedFoliageMultiplier(colormap[bm.biomeLookup()]);
+						int rmult = getFoliageColor(bm, colormap, getX() + dx, getZ() + dz);
 						raccum += (rmult >> 16) & 0xFF;
 						gaccum += (rmult >> 8) & 0xFF;
 						baccum += rmult & 0xFF;
@@ -483,7 +485,16 @@ public abstract class GenericMapChunkCache extends MapChunkCache {
 		public final int getWorldHeight() {
 			return worldheight;
 		}
-
+		@Override
+	    public final int getWorldYMin() {
+			return ymin;
+		}
+	    /**
+	     * Get world sealevel
+	     */
+	    public final int getWorldSeaLevel() {
+	    	return sealevel;
+	    }
 		@Override
 		public final long getBlockKey() {
 			return (((chunkindex * (worldheight - ymin)) + (y - ymin)) << 8) | (bx << 4) | bz;
@@ -546,6 +557,14 @@ public abstract class GenericMapChunkCache extends MapChunkCache {
 		}
 	}
 
+	public int getGrassColor(BiomeMap bm, int[] colormap, int x, int z) {
+		return bm.getModifiedGrassMultiplier(colormap[bm.biomeLookup()]);
+	}
+
+	public int getFoliageColor(BiomeMap bm, int[] colormap, int x, int z) {
+		return bm.getModifiedFoliageMultiplier(colormap[bm.biomeLookup()]);
+	}
+
 	private class OurEndMapIterator extends OurMapIterator {
 		OurEndMapIterator(int x0, int y0, int z0) {
 			super(x0, y0, z0);
@@ -599,8 +618,8 @@ public abstract class GenericMapChunkCache extends MapChunkCache {
 
 	public void setChunks(DynmapWorld dw, List<DynmapChunk> chunks) {
 		this.dw = dw;
-		nsect = (dw.worldheight - dw.minY) >> 4;
-		sectoff = (-dw.minY) >> 4;
+		nsect = (int)Math.ceil((dw.worldheight - dw.minY) / 16.0);
+		sectoff = (int)(Math.ceil((-dw.minY) / 16.0));
 		this.chunks = chunks;
 
 		/* Compute range */
@@ -1276,19 +1295,19 @@ public abstract class GenericMapChunkCache extends MapChunkCache {
 		            	bitsperblock = (statelist.length * 64) / 4096;
 	            		dbp = new DataBitsPacked(bitsperblock, 4096, statelist);
         			}
-        			if (bitsperblock > 8) {    // Not palette
-        				for (int j = 0; j < 4096; j++) {
-        					int v = db != null ? db.get(j) : dbp.getAt(j);
-                        	sbld.xyzBlockState(j & 0xF, (j & 0xF00) >> 8, (j & 0xF0) >> 4, DynmapBlockState.getStateByGlobalIndex(v));
-        				}
-        			}
-        			else {
+        			//if (bitsperblock > 8) {    // Not palette
+        			//	for (int j = 0; j < 4096; j++) {
+        			//		int v = db != null ? db.get(j) : dbp.getAt(j);
+                    //    	sbld.xyzBlockState(j & 0xF, (j & 0xF00) >> 8, (j & 0xF0) >> 4, DynmapBlockState.getStateByGlobalIndex(v));
+        			//	}
+        			//}
+        			//else {
         				sbld.xyzBlockStatePalette(palette);	// Set palette
         				for (int j = 0; j < 4096; j++) {
         					int v = db != null ? db.get(j) : dbp.getAt(j);
                         	sbld.xyzBlockStateInPalette(j & 0xF, (j & 0xF00) >> 8, (j & 0xF0) >> 4, (short)v);
         				}
-        			}
+        			//}
             	}
             }
             if (sec.contains("BlockLight")) {

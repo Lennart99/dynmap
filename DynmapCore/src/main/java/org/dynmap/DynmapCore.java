@@ -164,6 +164,7 @@ public class DynmapCore implements DynmapCommonAPI {
     private File dataDirectory;
     private File tilesDirectory;
     private File exportDirectory;
+    private File importDirectory;
     private String plugin_ver;
     private MapStorage defaultStorage;
     
@@ -177,6 +178,8 @@ public class DynmapCore implements DynmapCommonAPI {
     private Boolean webserverCompConfigWarn = false;
     private final String CompConfigWiki = "https://github.com/webbukkit/dynmap/wiki/Component-Configuration";
 
+    private final String[] defaultTemplates = {"vlowres", "lowres", "medres", "hires", "low_boost_hi",
+            "hi_boost_vhi", "hi_boost_xhi"};
     /* Constructor for core */
     public DynmapCore() {
     }
@@ -221,6 +224,9 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     public final File getExportFolder() {
         return exportDirectory;
+    }
+    public final File getImportFolder() {
+        return importDirectory;
     }
     public void setMinecraftVersion(String mcver) {
         this.platformVersion = mcver;
@@ -425,6 +431,11 @@ public class DynmapCore implements DynmapCommonAPI {
         exportDirectory = getFile(configuration.getString("exportpath", "export"));
         if (!exportDirectory.isDirectory() && !exportDirectory.mkdirs()) {
             Log.warning("Could not create directory for exports ('" + exportDirectory + "').");
+        }
+        // Prime the imports directory
+        importDirectory = getFile(configuration.getString("importpath", "import"));
+        if (!importDirectory.isDirectory() && !importDirectory.mkdirs()) {
+            Log.warning("Could not create directory for imports ('" + importDirectory + "').");
         }
         // Create default storage handler
         String storetype = configuration.getString("storage/type", "filetree");
@@ -701,7 +712,7 @@ public class DynmapCore implements DynmapCommonAPI {
         /* Print version info */
         Log.info("version " + plugin_ver + " is enabled - core version " + version );
         Log.info("For support, visit our Discord at https://discord.gg/s3rd5qn");
-        Log.info("For news, visit https://reddit.com/r/Dynmap or follow https://twitter.com/Dynmap");
+        Log.info("For news, visit https://reddit.com/r/Dynmap or follow https://universeodon.com/@dynmap");
         Log.info("To report or track bugs, visit https://github.com/webbukkit/dynmap/issues");
         Log.info("If you'd like to donate, please visit https://www.patreon.com/dynmap or https://ko-fi.com/michaelprimm");
 
@@ -1357,7 +1368,7 @@ public class DynmapCore implements DynmapCommonAPI {
         new CommandInfo("dmap", "mapadd", "<world>:<map> <attrib>:<value> <attrib>:<value>", "Create map for world <world> with name <map> using provided attributes."),
         new CommandInfo("dmap", "mapset", "<world>:<map> <attrib>:<value> <attrib>:<value>", "Update map <map> of world <world> with new attribute values."),
         new CommandInfo("dmap", "worldreset", "<world>", "Reset world <world> to default template for world type"),
-        new CommandInfo("dmap", "worldreset", "<world> <templatename>", "Reset world <world> to temaplte <templatename>."),
+        new CommandInfo("dmap", "worldreset", "<world> <templatename>", "Reset world <world> to template <templatename>."),
         new CommandInfo("dmap", "worldgetlimits", "<world>", "List visibity and hidden limits for world"),
         new CommandInfo("dmap", "worldaddlimit", "<world> corner1:<x>/<z> corner2:<x>/<z>", "Add rectangular visibilty limit"),
         new CommandInfo("dmap", "worldaddlimit", "<world> type:round center:<x>/<z> radius:<radius>", "Add round visibilty limit"),
@@ -2167,6 +2178,9 @@ public class DynmapCore implements DynmapCommonAPI {
     ConfigurationNode getDefaultTemplateConfigurationNode(DynmapWorld world) {
         String environmentName = world.getEnvironment();
         if(deftemplatesuffix.length() > 0) {
+            if(!Arrays.asList(defaultTemplates).contains(deftemplatesuffix)) {
+                Log.warning("Not using a default defined template, worlds might not be accessible.");
+            }
             environmentName += "-" + deftemplatesuffix;
         }
         Log.verboseinfo("Using environment as template: " + environmentName);

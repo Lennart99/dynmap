@@ -97,6 +97,7 @@ public abstract class AbstractMapChunkCache extends MapChunkCache {
         private DynmapBlockState type = null;
         private final int worldheight;
         private final int ymin;
+        private final int sealevel;
         private final int x_base;
         private final int z_base;
         
@@ -108,6 +109,7 @@ public abstract class AbstractMapChunkCache extends MapChunkCache {
             initialize(x0, y0, z0);
             worldheight = w.getMaxHeight();
             ymin = dw.minY;
+            sealevel = dw.sealevel;
         }
         
         @Override
@@ -587,6 +589,14 @@ public abstract class AbstractMapChunkCache extends MapChunkCache {
             return worldheight;
         }
         @Override
+        public int getWorldYMin() {
+        	return ymin;
+        }
+        @Override
+        public int getWorldSeaLevel() {
+        	return sealevel;
+        }
+        @Override
         public long getBlockKey() {
             return (((chunkindex * (worldheight - ymin)) + (y - ymin)) << 8) | (bx << 4) | bz;
         }
@@ -889,8 +899,8 @@ public abstract class AbstractMapChunkCache extends MapChunkCache {
                             int cz = te_z & 0xF;
                             String[] te_fields = HDBlockModels.getTileEntityFieldsNeeded(ss.getBlockType(cx, te_y, cz));
                             if(te_fields != null) {
-                                Object nbtcompound = BukkitVersionHelper.helper.readTileEntityNBT(t);
-                                
+                                //Object nbtcompound = BukkitVersionHelper.helper.readTileEntityNBT(t);
+                            	Object nbtcompound = BukkitVersionHelper.helper.readTileEntityNBT(t, this.w);
                                 vals.clear();
                                 for(String id: te_fields) {
                                     Object val = BukkitVersionHelper.helper.getFieldValue(nbtcompound, id);

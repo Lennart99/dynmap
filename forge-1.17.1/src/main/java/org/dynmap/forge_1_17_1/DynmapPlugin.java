@@ -1293,10 +1293,17 @@ public class DynmapPlugin
         }
         @Override
         public boolean isInvisible() {
-        	if(player != null) {
-        		return player.isInvisible();
-        	}
-        	return false;
+            if(player != null) {
+                return player.isInvisible();
+            }
+            return false;
+        }
+        @Override
+        public boolean isSpectator() {
+            if(player != null) {
+                return player.isSpectator();
+            }
+            return false;
         }
         @Override
         public int getSortWeight() {
@@ -1422,6 +1429,7 @@ public class DynmapPlugin
                     bmap.setWaterColorMultiplier(watermult);
                 	Log.verboseinfo("Set watercolormult for " + bmap.toString() + " (" + i + ") to " + Integer.toHexString(watermult));
                 }
+                bmap.setBiomeObject(bb);
             }
         }
         if(cnt > 0)

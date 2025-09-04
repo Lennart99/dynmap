@@ -2,8 +2,11 @@ package org.dynmap.forge_1_18_2;
 
 import java.util.List;
 
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import org.dynmap.DynmapChunk;
 import org.dynmap.Log;
+import org.dynmap.common.BiomeMap;
 import org.dynmap.common.chunk.GenericChunk;
 import org.dynmap.common.chunk.GenericChunkCache;
 import org.dynmap.common.chunk.GenericMapChunkCache;
@@ -64,13 +67,14 @@ public class ForgeMapChunkCache extends GenericMapChunkCache {
 
 	private CompoundTag readChunk(int x, int z) {
 		try {
-			CompoundTag rslt = cps.chunkMap.readChunk(new ChunkPos(x, z));
+			CompoundTag rslt = cps.chunkMap.read(new ChunkPos(x, z));
 			if (rslt != null) {
-				if (rslt.contains("Level")) {
-					rslt = rslt.getCompound("Level");
+				CompoundTag lev = rslt;
+				if (lev.contains("Level")) {
+					lev = lev.getCompound("Level");
 				}
 				// Don't load uncooked chunks
-				String stat = rslt.getString("Status");
+				String stat = lev.getString("Status");
 				ChunkStatus cs = ChunkStatus.byName(stat);
 				if ((stat == null) ||
 				// Needs to be at least lighted
@@ -85,5 +89,18 @@ public class ForgeMapChunkCache extends GenericMapChunkCache {
 			Log.severe(String.format("Error reading chunk: %s,%d,%d", dw.getName(), x, z), exc);
 			return null;
 		}
+	}
+	@Override
+	public int getFoliageColor(BiomeMap bm, int[] colormap, int x, int z) {
+		return bm.<Biome>getBiomeObject().map(Biome::getSpecialEffects)
+				.flatMap(BiomeSpecialEffects::getFoliageColorOverride)
+				.orElse(colormap[bm.biomeLookup()]);
+	}
+
+	@Override
+	public int getGrassColor(BiomeMap bm, int[] colormap, int x, int z) {
+		BiomeSpecialEffects effects = bm.<Biome>getBiomeObject().map(Biome::getSpecialEffects).orElse(null);
+		if (effects == null) return colormap[bm.biomeLookup()];
+		return effects.getGrassColorModifier().modifyColor(x, z, effects.getGrassColorOverride().orElse(colormap[bm.biomeLookup()]));
 	}
 }
